@@ -1,0 +1,12 @@
+# Môi trường ảo
+venv/
+__pycache__/
+*.pyc
+
+# Thư mục chứa các file được tạo ra
+/workspace/
+
+# File chứa biến môi trường
+.env
+
+credentials.json
