@@ -1,5 +1,7 @@
+
 # Môi trường ảo
 venv/
+manim/
 __pycache__/
 *.pyc
 
@@ -8,5 +10,9 @@ __pycache__/
 
 # File chứa biến môi trường
 .env
-
 credentials.json
+
+# macOS
+.DS_Store
+**/.DS_Store
+
