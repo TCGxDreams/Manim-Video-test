@@ -24,30 +24,30 @@ duration_tool = VideoDurationTool()
 MANIM_HANDBOOK = '''
 === SỔ TAY MANIM - MANIM COMMUNITY v0.18 ===
 
-⚠️ QUAN TRỌNG: Đây là Manim Community, KHÔNG phải manimgl của 3B1B!
-⚠️ KHÔNG dùng: get_tangent_line() - không có trong API này
+[WARNING] QUAN TRỌNG: Đây là Manim Community, KHÔNG phải manimgl của 3B1B!
+[WARNING] KHÔNG dùng: get_tangent_line() - không có trong API này
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🎨 BẢNG MÀU
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[COLORS] BẢNG MÀU
+
 
 TEAL_E = "#49A88F"   # Graph 
 GOLD_E = "#C78D46"   # Highlights
 BLUE_E = "#1C758A"   # Area
 GREY_A = "#DDDDDD"   # Axes
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-⚠️ KHÔNG DÙNG TANGENT LINE - QUÁ PHỨC TẠP
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[WARNING] KHÔNG DÙNG TANGENT LINE - QUÁ PHỨC TẠP
+
 
 Thay vì dùng tangent line động, hãy dùng:
 - Hiển thị công thức đạo hàm
 - Dùng arrow để chỉ độ dốc
 - Dùng animations đơn giản với Transform
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 MẪU 1: VIDEO ĐẠO HÀM ĐƠN GIẢN (ĐÃ TEST)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 
 ```python
 from manim import *
@@ -151,18 +151,18 @@ class DerivativeVideo(Scene):
         self.wait(2)
 ```
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-LUẬT BẮT BUỘC
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-✅ DÙNG:
+LUẬT BẮT BUỘC
+
+
+[OK] DÙNG:
 - axes.plot() để vẽ đồ thị
 - Create(), Write(), FadeIn(), FadeOut()
 - Transform(), ReplacementTransform()
 - VGroup() để nhóm objects
 - .to_corner(UL), .to_edge(DOWN), .move_to(ORIGIN)
 
-❌ KHÔNG DÙNG:
+[ERROR] KHÔNG DÙNG:
 - get_tangent_line() - KHÔNG TỒN TẠI
 - always_redraw() với tangent - QUÁ PHỨC TẠP
 - ValueTracker với moving dots - DỄ LỖI
@@ -193,10 +193,10 @@ class VideoAgents:
             goal="Viết mã Manim đơn giản, KHÔNG dùng tangent line, KHÔNG dùng always_redraw.",
             backstory=(
                 "QUY TẮC NGHIÊM NGẶT:\n"
-                "❌ KHÔNG dùng get_tangent_line() - không có trong API\n"
-                "❌ KHÔNG dùng always_redraw() với moving tangent\n"
-                "❌ KHÔNG dùng ValueTracker phức tạp\n\n"
-                "✅ CHỈ dùng:\n"
+                "[ERROR] KHÔNG dùng get_tangent_line() - không có trong API\n"
+                "[ERROR] KHÔNG dùng always_redraw() với moving tangent\n"
+                "[ERROR] KHÔNG dùng ValueTracker phức tạp\n\n"
+                "[OK] CHỈ dùng:\n"
                 "- axes.plot() để vẽ graph\n"
                 "- Create(), Write(), FadeOut(), Transform()\n"
                 "- MathTex(), Text()\n"

@@ -64,14 +64,14 @@ class TextToSpeechTool(BaseTool):
             duration_str = f"{duration:.2f}s" if duration > 0 else "unknown"
             
             return (
-                f"✅ Audio file saved successfully!\n"
-                f"📁 Path: {file_path}\n"
-                f"🌐 Language: {language}\n"
-                f"⏱️ Duration: {duration_str}"
+                f"[OK] Audio file saved successfully!\n"
+                f"Path: Path: {file_path}\n"
+                f"Language: Language: {language}\n"
+                f"Duration: Duration: {duration_str}"
             )
             
         except Exception as e:
-            return f"❌ Error generating audio file: {e}"
+            return f"[ERROR] Error generating audio file: {e}"
 
 
 class EnhancedTTSTool(BaseTool):
@@ -151,15 +151,15 @@ class EnhancedTTSTool(BaseTool):
             duration_str = f"{duration:.2f}s" if duration > 0 else "unknown"
             
             return (
-                f"✅ Audio file generated!\n"
-                f"📁 Path: {final_file}\n"
-                f"🌐 Language: {language}\n"
+                f"[OK] Audio file generated!\n"
+                f"Path: Path: {final_file}\n"
+                f"Language: Language: {language}\n"
                 f"⚡ Speed: {speed}x\n"
-                f"⏱️ Duration: {duration_str}"
+                f"Duration: Duration: {duration_str}"
             )
             
         except Exception as e:
             # Cleanup temp file on error
             if os.path.exists(temp_file):
                 os.remove(temp_file)
-            return f"❌ Error generating audio file: {e}"
+            return f"[ERROR] Error generating audio file: {e}"

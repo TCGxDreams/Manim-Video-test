@@ -87,7 +87,7 @@ class FFmpegTool(BaseTool):
             ]
             
             duration_info = (
-                f"\n📊 Duration info: Video={video_duration:.2f}s, Audio={audio_duration:.2f}s, "
+                f"\nInfo: Duration info: Video={video_duration:.2f}s, Audio={audio_duration:.2f}s, "
                 f"Speed factor={speed_factor:.2f}x"
             )
         else:
@@ -107,11 +107,11 @@ class FFmpegTool(BaseTool):
 
         try:
             subprocess.run(command, check=True, capture_output=True, text=True)
-            return f"✅ Video and audio merged successfully. Final video at: {output_path}{duration_info}"
+            return f"[OK] Video and audio merged successfully. Final video at: {output_path}{duration_info}"
         except subprocess.CalledProcessError as e:
-            return f"❌ FFmpeg execution failed: {e.stderr}"
+            return f"[ERROR] FFmpeg execution failed: {e.stderr}"
         except FileNotFoundError:
-            return "❌ Error: 'ffmpeg' command not found. Please ensure FFmpeg is installed and accessible in your system's PATH."
+            return "[ERROR] Error: 'ffmpeg' command not found. Please ensure FFmpeg is installed and accessible in your system's PATH."
 
 
 class ManimExecutionTool(BaseTool):
@@ -225,7 +225,7 @@ vietnamese_template.preamble = r'''
             with open(py_file_path_to_write, "w", encoding="utf-8") as f:
                 f.write(manim_code)
         except Exception as e:
-            return f"❌ Error writing Manim code to file: {e}"
+            return f"[ERROR] Error writing Manim code to file: {e}"
 
         # Xây dựng lệnh Manim
         command = [
@@ -273,10 +273,10 @@ vietnamese_template.preamble = r'''
             duration_str = f"{duration:.2f}s" if duration > 0 else "unknown"
             
             return (
-                f"✅ Manim scene rendered successfully!\n"
-                f"📁 Video path: {video_file_path}\n"
-                f"🎬 Resolution: {quality_info['resolution']} @ {fps}fps\n"
-                f"⏱️ Duration: {duration_str}"
+                f"[OK] Manim scene rendered successfully!\n"
+                f"Path: Video path: {video_file_path}\n"
+                f"Resolution: Resolution: {quality_info['resolution']} @ {fps}fps\n"
+                f"Duration: Duration: {duration_str}"
             )
             
         except subprocess.CalledProcessError as e:
@@ -307,7 +307,7 @@ vietnamese_template.preamble = r'''
                 suggestion = "Lỗi khi thực thi. Kiểm tra logic trong construct()."
             
             error_message = (
-                f"❌ {error_type} - Manim execution failed (code {e.returncode})\n\n"
+                f"[ERROR] {error_type} - Manim execution failed (code {e.returncode})\n\n"
                 f"💡 Gợi ý: {suggestion}\n\n"
                 f"--- STDERR ---\n{stderr}\n\n"
                 f"--- STDOUT ---\n{stdout}"
@@ -315,7 +315,7 @@ vietnamese_template.preamble = r'''
             return error_message
             
         except FileNotFoundError:
-            return "❌ Error: 'manim' command not found. Please ensure Manim is installed and accessible in your system's PATH."
+            return "[ERROR] Error: 'manim' command not found. Please ensure Manim is installed and accessible in your system's PATH."
 
 
 class VideoDurationTool(BaseTool):
@@ -331,7 +331,7 @@ class VideoDurationTool(BaseTool):
         file_path = os.path.join("workspace", file_name)
         
         if not os.path.exists(file_path):
-            return f"❌ Error: File not found at {file_path}"
+            return f"[ERROR] Error: File not found at {file_path}"
         
         try:
             result = subprocess.run(
@@ -343,8 +343,8 @@ class VideoDurationTool(BaseTool):
             )
             data = json.loads(result.stdout)
             duration = float(data["format"]["duration"])
-            return f"✅ Duration of {file_name}: {duration:.2f} seconds"
+            return f"[OK] Duration of {file_name}: {duration:.2f} seconds"
         except subprocess.CalledProcessError as e:
-            return f"❌ Error getting duration: {e.stderr}"
+            return f"[ERROR] Error getting duration: {e.stderr}"
         except Exception as e:
-            return f"❌ Error: {e}"
+            return f"[ERROR] Error: {e}"
