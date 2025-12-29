@@ -1,4 +1,4 @@
-# requirements.txt - Bộ phiên bản "Vàng" ổn định
+# requirements.txt - Enhanced version with new dependencies
 
 crewai==0.30.11
 crewai-tools==0.1.7
@@ -11,3 +11,6 @@ gTTS==2.5.1
 pydantic<3.0.0
 manim
 numpy<2.0.0,>=1.23.0
+
+# New dependencies for enhanced features
+mutagen>=1.47.0  # For MP3 duration detection

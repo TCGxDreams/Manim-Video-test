@@ -37,7 +37,7 @@ llm_flash = ChatGoogleGenerativeAI(
 
 print("💻 Khởi tạo LLM Pro cho tác vụ viết code...")
 llm_pro = ChatGoogleGenerativeAI(
-    model="gemini-2.0-flash",
+    model="gemini-3-flash-preview",
     temperature=0.4 # Giảm nhiệt độ để code logic và chính xác hơn
 )
 
@@ -63,7 +63,7 @@ def main():
     Hàm chính điều khiển toàn bộ quy trình sản xuất video,
     bao gồm cả vòng lặp tự sửa lỗi.
     """
-    video_topic = "introduction to integrals"
+    video_topic = "Đạo hàm cơ bản - derivative of x^n, sin(x), e^x - video 1 phút tiếng Việt"
     max_retries = 5 # Số lần tối đa cho phép Lập trình viên sửa lỗi
 
     print(f"\n🎬 Bắt đầu quy trình sản xuất nâng cao cho chủ đề: '{video_topic}'")
