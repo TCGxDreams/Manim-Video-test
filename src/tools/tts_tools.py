@@ -4,24 +4,23 @@ from gtts import gTTS
 from langchain.tools import BaseTool 
 
 class TextToSpeechTool(BaseTool):
-    """Enhanced TTS tool with multiple features."""
+    """Enhanced TTS tool with multiple features. Supports English and Vietnamese."""
     
     name: str = "Text to Speech Tool"
     description: str = (
         "Converts text into an MP3 audio file using Google Text-to-Speech. "
+        "Supports both English and Vietnamese. "
         "Arguments: text (str) - text to convert, file_name (str, default='voiceover.mp3'), "
         "language (str, default='auto') - 'en', 'vi', or 'auto' for auto-detection, "
         "slow (bool, default=False) - slower speech speed. "
         "Returns the file path and audio duration in seconds."
     )
 
-    VIETNAMESE_CHARS = set('aeiouydAEIOUYD')
-
     def _detect_language(self, text: str) -> str:
-        """Auto-detect language based on characters."""
-        vietnamese_pattern = 'àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬÈÉẺẼẸÊỀẾỂỄỆÌÍỈĨỊÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢÙÚỦŨỤƯỪỨỬỮỰỲÝỶỸỴĐ'
+        """Auto-detect language based on characters. / Tu dong phat hien ngon ngu."""
+        vietnamese_chars = 'àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬÈÉẺẼẸÊỀẾỂỄỆÌÍỈĨỊÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢÙÚỦŨỤƯỪỨỬỮỰỲÝỶỸỴĐ'
         for char in text:
-            if char in vietnamese_pattern:
+            if char in vietnamese_chars:
                 return 'vi'
         return 'en'
 
@@ -46,7 +45,7 @@ class TextToSpeechTool(BaseTool):
         try:
             os.makedirs(workspace_dir, exist_ok=True)
             
-            # Auto-detect language if needed
+            # Auto-detect language if needed / Tu dong phat hien ngon ngu neu can
             if language == "auto":
                 language = self._detect_language(text)
             
@@ -64,31 +63,31 @@ class TextToSpeechTool(BaseTool):
             duration_str = f"{duration:.2f}s" if duration > 0 else "unknown"
             
             return (
-                f"[OK] Audio file saved successfully!\n"
+                f"[OK] Audio file saved successfully! / Audio da duoc luu thanh cong!\n"
                 f"Path: {file_path}\n"
-                f"Language: {language}\n"
-                f"Duration: {duration_str}"
+                f"Language / Ngon ngu: {language}\n"
+                f"Duration / Thoi luong: {duration_str}"
             )
             
         except Exception as e:
-            return f"[ERROR] Error generating audio file: {e}"
+            return f"[ERROR] Error generating audio file / Loi tao audio: {e}"
 
 
 class EnhancedTTSTool(BaseTool):
-    """TTS tool with speed and pitch control."""
+    """TTS tool with speed and pitch control. Supports English and Vietnamese."""
     
     name: str = "Enhanced Text to Speech Tool"
     description: str = (
-        "Advanced text-to-speech with speed control. "
+        "Advanced text-to-speech with speed control. Supports English and Vietnamese. "
         "Arguments: text (str), file_name (str), language (str, default='auto'), "
         "speed (float, default=1.0) - speech speed multiplier (0.5 to 2.0). "
         "Note: Speed adjustment requires ffmpeg."
     )
 
     def _detect_language(self, text: str) -> str:
-        vietnamese_pattern = 'àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬÈÉẺẼẸÊỀẾỂỄỆÌÍỈĨỊÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢÙÚỦŨỤƯỪỨỬỮỰỲÝỶỸỴĐ'
+        vietnamese_chars = 'àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬÈÉẺẼẸÊỀẾỂỄỆÌÍỈĨỊÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢÙÚỦŨỤƯỪỨỬỮỰỲÝỶỸỴĐ'
         for char in text:
-            if char in vietnamese_pattern:
+            if char in vietnamese_chars:
                 return 'vi'
         return 'en'
 
@@ -150,15 +149,15 @@ class EnhancedTTSTool(BaseTool):
             duration_str = f"{duration:.2f}s" if duration > 0 else "unknown"
             
             return (
-                f"[OK] Audio file generated!\n"
+                f"[OK] Audio file generated! / Audio da duoc tao!\n"
                 f"Path: {final_file}\n"
-                f"Language: {language}\n"
-                f"Speed: {speed}x\n"
-                f"Duration: {duration_str}"
+                f"Language / Ngon ngu: {language}\n"
+                f"Speed / Toc do: {speed}x\n"
+                f"Duration / Thoi luong: {duration_str}"
             )
             
         except Exception as e:
             # Cleanup temp file on error
             if os.path.exists(temp_file):
                 os.remove(temp_file)
-            return f"[ERROR] Error generating audio file: {e}"
+            return f"[ERROR] Error generating audio file / Loi tao audio: {e}"

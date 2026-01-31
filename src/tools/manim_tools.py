@@ -4,15 +4,16 @@ import json
 import re
 from langchain.tools import BaseTool 
 
-# Ensure workspace directory exists
+# Ensure workspace directory exists / Dam bao thu muc workspace ton tai
 os.makedirs("workspace", exist_ok=True)
 
 class FFmpegTool(BaseTool):
-    """Enhanced FFmpeg tool with speed adjustment and audio normalization."""
+    """Enhanced FFmpeg tool with speed adjustment. / Cong cu FFmpeg voi dieu chinh toc do."""
     
     name: str = "FFmpeg Video-Audio Merger"
     description: str = (
         "Merges a video file and an audio file into a single output video file using FFmpeg. "
+        "Ghep video va audio thanh mot file output. "
         "Can adjust video speed to match audio duration. "
         "Arguments: video_file (str), audio_file (str), output_file (str, default='final_video.mp4'), "
         "speed_adjust (bool, default=True) - automatically adjust video speed to match audio duration."
@@ -46,27 +47,21 @@ class FFmpegTool(BaseTool):
         output_path = os.path.join("workspace", output_file)
 
         if not os.path.exists(video_path):
-            return f"Error: Video file not found at {video_path}"
+            return f"Error: Video file not found at {video_path} / Khong tim thay file video"
         if not os.path.exists(audio_path):
-            return f"Error: Audio file not found at {audio_path}"
+            return f"Error: Audio file not found at {audio_path} / Khong tim thay file audio"
 
         # Get duration of both files
         video_duration = self._get_duration(video_path)
         audio_duration = self._get_duration(audio_path)
 
         if video_duration <= 0 or audio_duration <= 0:
-            # Fallback if unable to get duration
             speed_adjust = False
 
         # Calculate speed factor
         if speed_adjust and video_duration > 0 and audio_duration > 0:
-            # speed_factor > 1: video runs faster, < 1: video runs slower
             speed_factor = video_duration / audio_duration
-            
-            # Limit speed factor to reasonable range (0.5x - 2x)
             speed_factor = max(0.5, min(2.0, speed_factor))
-            
-            # Use setpts filter to adjust video speed
             video_filter = f"setpts={1/speed_factor}*PTS"
             
             command = [
@@ -91,7 +86,6 @@ class FFmpegTool(BaseTool):
                 f"Speed factor={speed_factor:.2f}x"
             )
         else:
-            # Simple merge without speed adjustment
             command = [
                 "ffmpeg",
                 "-y",
@@ -107,19 +101,20 @@ class FFmpegTool(BaseTool):
 
         try:
             subprocess.run(command, check=True, capture_output=True, text=True)
-            return f"[OK] Video and audio merged successfully. Final video at: {output_path}{duration_info}"
+            return f"[OK] Video and audio merged successfully! / Ghep video va audio thanh cong!\nFinal video at: {output_path}{duration_info}"
         except subprocess.CalledProcessError as e:
-            return f"[ERROR] FFmpeg execution failed: {e.stderr}"
+            return f"[ERROR] FFmpeg execution failed / FFmpeg that bai: {e.stderr}"
         except FileNotFoundError:
-            return "[ERROR] 'ffmpeg' command not found. Please ensure FFmpeg is installed."
+            return "[ERROR] 'ffmpeg' command not found. Please install FFmpeg. / Khong tim thay lenh 'ffmpeg'. Vui long cai dat FFmpeg."
 
 
 class ManimExecutionTool(BaseTool):
-    """Enhanced Manim execution tool with quality options."""
+    """Enhanced Manim execution tool. Supports Vietnamese text."""
     
     name: str = "Manim Code Execution Tool"
     description: str = (
         "Executes Manim code with configurable quality settings. "
+        "Supports Vietnamese text in animations. "
         "Arguments: manim_code (str) - Python code, class_name (str) - Manim class name, "
         "quality (str, default='h') - 'l'=480p, 'm'=720p, 'h'=1080p, 'p'=1440p, 'k'=4K, "
         "fps (int, default=30) - frame rate (15, 30, or 60). "
@@ -133,19 +128,6 @@ class ManimExecutionTool(BaseTool):
         "p": {"flag": "-qp", "resolution": "1440p", "default_fps": 60},
         "k": {"flag": "-qk", "resolution": "4K", "default_fps": 60},
     }
-
-    # Template cho tiếng Việt với XeLaTeX
-    VIETNAMESE_TEX_TEMPLATE = '''
-\\documentclass[preview]{standalone}
-\\usepackage{fontspec}
-\\usepackage{unicode-math}
-\\setmainfont{Arial}
-\\usepackage{amsmath}
-\\usepackage{amssymb}
-\\begin{document}
-YourTextHere
-\\end{document}
-'''
 
     def _get_video_duration(self, video_path: str) -> float:
         """Get video duration using ffprobe."""
@@ -164,7 +146,6 @@ YourTextHere
 
     def _detect_vietnamese(self, code: str) -> bool:
         """Check if code contains Vietnamese characters."""
-        vietnamese_pattern = r'[aeiouydAEIOUYD]'
         vietnamese_chars = 'àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬÈÉẺẼẸÊỀẾỂỄỆÌÍỈĨỊÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢÙÚỦŨỤƯỪỨỬỮỰỲÝỶỸỴĐ'
         for char in code:
             if char in vietnamese_chars:
@@ -172,14 +153,14 @@ YourTextHere
         return False
 
     def _inject_vietnamese_support(self, code: str) -> str:
-        """Add Vietnamese support if needed."""
+        """Add Vietnamese support if needed. / Them ho tro tieng Viet neu can."""
         if not self._detect_vietnamese(code):
             return code
         
         # Add TexTemplate import if not exists
         if "TexTemplate" not in code:
             import_section = """
-# Vietnamese language support
+# Vietnamese language support / Ho tro tieng Viet
 from manim import TexTemplate
 
 vietnamese_template = TexTemplate()
@@ -190,7 +171,6 @@ vietnamese_template.preamble = r'''
 \\usepackage{amssymb}
 '''
 """
-            # Insert after manim import
             if "from manim import" in code:
                 code = code.replace("from manim import *", "from manim import *" + import_section)
             elif "import manim" in code:
@@ -208,7 +188,7 @@ vietnamese_template.preamble = r'''
         # Validate quality
         quality = quality.lower()
         if quality not in self.QUALITY_MAP:
-            quality = "h"  # Default to 1080p
+            quality = "h"
         
         quality_info = self.QUALITY_MAP[quality]
         
@@ -228,7 +208,7 @@ vietnamese_template.preamble = r'''
             with open(py_file_path_to_write, "w", encoding="utf-8") as f:
                 f.write(manim_code)
         except Exception as e:
-            return f"[ERROR] Error writing Manim code to file: {e}"
+            return f"[ERROR] Error writing Manim code to file / Loi ghi ma Manim vao file: {e}"
 
         # Build Manim command
         command = [
@@ -250,22 +230,15 @@ vietnamese_template.preamble = r'''
                 check=True
             )
             
-            # Manim outputs to: workspace/videos/animation_scene/{quality}/animation_scene.mp4
-            # We need to copy to workspace/animation_scene.mp4 for production step
-            quality_folder = f"{quality_info['resolution'].replace('p', '')}p{fps}"
-            actual_video_path = os.path.join("workspace", "videos", file_name, quality_folder, f"{file_name}.mp4")
-            expected_video_path = os.path.join("workspace", f"{file_name}.mp4")
-            
-            # Try to find and copy the video
+            # Find and copy video to workspace root
             import shutil
             import glob
             
-            # Search for the video file in various quality folders
             search_pattern = os.path.join("workspace", "videos", file_name, "*", f"{file_name}.mp4")
             found_videos = glob.glob(search_pattern)
+            expected_video_path = os.path.join("workspace", f"{file_name}.mp4")
             
             if found_videos:
-                # Copy the most recent video to workspace root
                 shutil.copy2(found_videos[0], expected_video_path)
                 video_file_path = expected_video_path
             else:
@@ -276,49 +249,48 @@ vietnamese_template.preamble = r'''
             duration_str = f"{duration:.2f}s" if duration > 0 else "unknown"
             
             return (
-                f"[OK] Manim scene rendered successfully!\n"
+                f"[OK] Manim scene rendered successfully! / Manim scene render thanh cong!\n"
                 f"Video path: {video_file_path}\n"
-                f"Resolution: {quality_info['resolution']} @ {fps}fps\n"
-                f"Duration: {duration_str}"
+                f"Resolution / Do phan giai: {quality_info['resolution']} @ {fps}fps\n"
+                f"Duration / Thoi luong: {duration_str}"
             )
             
         except subprocess.CalledProcessError as e:
-            # Detailed error classification
             stderr = e.stderr
             stdout = e.stdout
             
-            error_type = "Unknown Error"
+            error_type = "Unknown Error / Loi khong xac dinh"
             suggestion = ""
             
             if "SyntaxError" in stderr or "SyntaxError" in stdout:
-                error_type = "SYNTAX ERROR"
-                suggestion = "Check Python syntax: parentheses, colons, indentation."
+                error_type = "SYNTAX ERROR / LOI CU PHAP"
+                suggestion = "Check Python syntax: parentheses, colons, indentation. / Kiem tra cu phap Python: dau ngoac, dau hai cham, indent."
             elif "ImportError" in stderr or "ModuleNotFoundError" in stderr:
-                error_type = "IMPORT ERROR"
-                suggestion = "Module does not exist. Only use classes from 'from manim import *'."
+                error_type = "IMPORT ERROR / LOI IMPORT"
+                suggestion = "Module does not exist. Only use classes from 'from manim import *'. / Module khong ton tai."
             elif "AttributeError" in stderr:
-                error_type = "ATTRIBUTE ERROR"
-                suggestion = "Method or property does not exist. Check method name spelling."
+                error_type = "ATTRIBUTE ERROR / LOI ATTRIBUTE"
+                suggestion = "Method or property does not exist. Check method name spelling. / Method hoac property khong ton tai."
             elif "TypeError" in stderr:
-                error_type = "TYPE ERROR"
-                suggestion = "Wrong data type. Check parameters passed."
+                error_type = "TYPE ERROR / LOI KIEU DU LIEU"
+                suggestion = "Wrong data type. Check parameters passed. / Sai kieu du lieu."
             elif "ValueError" in stderr:
-                error_type = "VALUE ERROR"
-                suggestion = "Invalid value."
+                error_type = "VALUE ERROR / LOI GIA TRI"
+                suggestion = "Invalid value. / Gia tri khong hop le."
             elif "RuntimeError" in stderr or "Exception" in stderr:
-                error_type = "RUNTIME ERROR"
-                suggestion = "Error during execution. Check logic in construct()."
+                error_type = "RUNTIME ERROR / LOI RUNTIME"
+                suggestion = "Error during execution. Check logic in construct(). / Loi khi thuc thi."
             
             error_message = (
                 f"[ERROR] {error_type} - Manim execution failed (code {e.returncode})\n\n"
-                f"Suggestion: {suggestion}\n\n"
+                f"Suggestion / Goi y: {suggestion}\n\n"
                 f"--- STDERR ---\n{stderr}\n\n"
                 f"--- STDOUT ---\n{stdout}"
             )
             return error_message
             
         except FileNotFoundError:
-            return "[ERROR] 'manim' command not found. Please ensure Manim is installed."
+            return "[ERROR] 'manim' command not found. Please install Manim. / Khong tim thay lenh 'manim'. Vui long cai dat Manim."
 
 
 class VideoDurationTool(BaseTool):
@@ -327,6 +299,7 @@ class VideoDurationTool(BaseTool):
     name: str = "Media Duration Tool"
     description: str = (
         "Gets the duration of a video or audio file in seconds. "
+        "Lay thoi luong cua file video hoac audio tinh bang giay. "
         "Argument: file_name (str) - name of the file in workspace directory."
     )
 
@@ -334,7 +307,7 @@ class VideoDurationTool(BaseTool):
         file_path = os.path.join("workspace", file_name)
         
         if not os.path.exists(file_path):
-            return f"[ERROR] File not found at {file_path}"
+            return f"[ERROR] File not found at {file_path} / Khong tim thay file"
         
         try:
             result = subprocess.run(
@@ -346,8 +319,8 @@ class VideoDurationTool(BaseTool):
             )
             data = json.loads(result.stdout)
             duration = float(data["format"]["duration"])
-            return f"[OK] Duration of {file_name}: {duration:.2f} seconds"
+            return f"[OK] Duration of {file_name} / Thoi luong cua {file_name}: {duration:.2f} seconds / giay"
         except subprocess.CalledProcessError as e:
-            return f"[ERROR] Error getting duration: {e.stderr}"
+            return f"[ERROR] Error getting duration / Loi lay thoi luong: {e.stderr}"
         except Exception as e:
-            return f"[ERROR] Error: {e}"
+            return f"[ERROR] Error / Loi: {e}"

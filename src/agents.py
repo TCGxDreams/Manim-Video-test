@@ -1,4 +1,4 @@
-# src/agents.py - MANIM COMMUNITY COMPATIBLE
+# src/agents.py - Bilingual MANIM COMMUNITY COMPATIBLE
 
 from crewai import Agent
 from crewai_tools import SerperDevTool, ScrapeWebsiteTool
@@ -6,7 +6,7 @@ from .tools.file_tools import FileWriteTool, CustomFileReadTool
 from .tools.manim_tools import ManimExecutionTool, FFmpegTool, VideoDurationTool
 from .tools.tts_tools import TextToSpeechTool, EnhancedTTSTool
 
-# Initialize tools
+# Initialize tools / Khoi tao cac cong cu
 search_tool = SerperDevTool()
 scrape_tool = ScrapeWebsiteTool()
 file_write_tool = FileWriteTool()
@@ -20,33 +20,40 @@ duration_tool = VideoDurationTool()
 
 # ============================================================================
 # MANIM HANDBOOK - MANIM COMMUNITY v0.18 COMPATIBLE
+# SO TAY MANIM - TUONG THICH MANIM COMMUNITY v0.18
 # ============================================================================
 MANIM_HANDBOOK = '''
-=== MANIM HANDBOOK - MANIM COMMUNITY v0.18 ===
+=== MANIM HANDBOOK / SO TAY MANIM - MANIM COMMUNITY v0.18 ===
 
 [WARNING] This is Manim Community, NOT manimgl from 3B1B!
+[CANH BAO] Day la Manim Community, KHONG phai manimgl cua 3B1B!
+
 [WARNING] Do NOT use: get_tangent_line() - not available in this API
+[CANH BAO] KHONG dung: get_tangent_line() - khong co trong API nay
 
 ---
-COLOR PALETTE
+COLOR PALETTE / BANG MAU
 ---
 
-TEAL_E = "#49A88F"   # Graph 
-GOLD_E = "#C78D46"   # Highlights
-BLUE_E = "#1C758A"   # Area
-GREY_A = "#DDDDDD"   # Axes
+TEAL_E = "#49A88F"   # Graph / Do thi
+GOLD_E = "#C78D46"   # Highlights / Noi bat
+BLUE_E = "#1C758A"   # Area / Vung
+GREY_A = "#DDDDDD"   # Axes / Truc toa do
 
 ---
 [WARNING] DO NOT USE TANGENT LINE - TOO COMPLEX
+[CANH BAO] KHONG DUNG TANGENT LINE - QUA PHUC TAP
 ---
 
 Instead of dynamic tangent lines, use:
-- Display derivative formula
-- Use arrows to show slope
-- Use simple animations with Transform
+Thay vi dung tangent line dong, hay dung:
+- Display derivative formula / Hien thi cong thuc dao ham
+- Use arrows to show slope / Dung mui ten de chi do doc
+- Use simple animations with Transform / Dung animations don gian voi Transform
 
 ---
 TEMPLATE 1: SIMPLE DERIVATIVE VIDEO (TESTED)
+MAU 1: VIDEO DAO HAM DON GIAN (DA TEST)
 ---
 
 ```python
@@ -60,8 +67,9 @@ GREY_A = "#DDDDDD"
 
 class DerivativeVideo(Scene):
     def construct(self):
-        # === SCENE 1: Power Rule ===
+        # === SCENE 1: Power Rule / Quy tac luy thua ===
         title = Text("Derivative x^n", font_size=36).to_corner(UL)
+        # Vietnamese: title = Text("Dao ham x^n", font_size=36).to_corner(UL)
         
         axes = Axes(
             x_range=[0, 4, 1], y_range=[0, 10, 2],
@@ -79,12 +87,12 @@ class DerivativeVideo(Scene):
         self.play(Write(formula1), run_time=1)
         self.wait(1)
         
-        # Transform formula
+        # Transform formula / Bien doi cong thuc
         formula2 = MathTex(r"f'(x) = n \\cdot x^{n-1}", font_size=40, color=GOLD_E).to_edge(DOWN, buff=0.5)
         self.play(Transform(formula1, formula2), run_time=1.5)
         self.wait(2)
         
-        # Cleanup
+        # Cleanup / Don dep
         self.play(FadeOut(VGroup(title, axes, graph, formula1)), run_time=1)
         
         # === SCENE 2: sin(x) ===
@@ -122,6 +130,7 @@ class DerivativeVideo(Scene):
         
         formula4 = MathTex(r"\\frac{d}{dx}[e^x] = e^x", font_size=40).to_edge(DOWN, buff=0.5)
         special = Text("Special function!", font_size=28, color=GOLD_E).next_to(formula4, UP, buff=0.3)
+        # Vietnamese: special = Text("Ham so dac biet!", font_size=28, color=GOLD_E)
         
         self.play(Write(title3), Create(axes3), run_time=1.5)
         self.play(Create(exp_graph), run_time=2)
@@ -131,8 +140,9 @@ class DerivativeVideo(Scene):
         # Cleanup
         self.play(FadeOut(VGroup(title3, axes3, exp_graph, formula4, special)), run_time=1)
         
-        # === SCENE 4: Summary ===
+        # === SCENE 4: Summary / Tong ket ===
         summary_title = Text("Summary", font_size=42, color=WHITE).shift(UP*2.5)
+        # Vietnamese: summary_title = Text("Tong ket", font_size=42, color=WHITE)
         
         formulas = VGroup(
             MathTex(r"\\frac{d}{dx}[x^n] = n \\cdot x^{n-1}"),
@@ -147,40 +157,43 @@ class DerivativeVideo(Scene):
             self.play(f.animate.set_color(WHITE), run_time=0.3)
         
         thanks = Text("Thanks for watching!", font_size=36).shift(DOWN*2.5)
+        # Vietnamese: thanks = Text("Cam on ban da xem!", font_size=36)
         self.play(Write(thanks), run_time=1)
         self.wait(2)
 ```
 
 ---
-MANDATORY RULES
+MANDATORY RULES / LUAT BAT BUOC
 ---
 
-[OK] USE:
-- axes.plot() to draw graphs
+[OK] USE / DUNG:
+- axes.plot() to draw graphs / de ve do thi
 - Create(), Write(), FadeIn(), FadeOut()
 - Transform(), ReplacementTransform()
-- VGroup() to group objects
+- VGroup() to group objects / de nhom objects
 - .to_corner(UL), .to_edge(DOWN), .move_to(ORIGIN)
 
-[ERROR] DO NOT USE:
-- get_tangent_line() - DOES NOT EXIST
-- always_redraw() with tangent - TOO COMPLEX
-- ValueTracker with moving dots - ERROR PRONE
+[ERROR] DO NOT USE / KHONG DUNG:
+- get_tangent_line() - DOES NOT EXIST / KHONG TON TAI
+- always_redraw() with tangent - TOO COMPLEX / QUA PHUC TAP
+- ValueTracker with moving dots - ERROR PRONE / DE LOI
 
-=== END OF HANDBOOK ===
+=== END OF HANDBOOK / KET THUC SO TAY ===
 '''
 
 
 class VideoAgents:
     def storyteller_agent(self, llm):
         return Agent(
-            role="Simple Video Scriptwriter",
+            role="Simple Video Scriptwriter / Nguoi viet kich ban video don gian",
             goal="Write simple video scripts without tangent lines or moving dots.",
             backstory=(
-                "You write simple scripts:\n"
-                "- DO NOT describe moving tangent lines\n"
-                "- DO NOT describe moving points on graph\n"
+                "You write simple scripts (supports both English and Vietnamese):\n"
+                "Ban viet kich ban don gian (ho tro ca tieng Anh va tieng Viet):\n"
+                "- DO NOT describe moving tangent lines / KHONG mo ta duong tiep tuyen di chuyen\n"
+                "- DO NOT describe moving points on graph / KHONG mo ta diem di chuyen tren graph\n"
                 "- ONLY describe: draw graph, display formula, transform formula\n"
+                "  CHI mo ta: ve graph, hien thi cong thuc, bien doi cong thuc\n"
             ),
             tools=[file_write_tool],
             llm=llm,
@@ -192,12 +205,15 @@ class VideoAgents:
             role="Manim Community v0.18 Developer",
             goal="Write simple Manim code, DO NOT use tangent line, DO NOT use always_redraw.",
             backstory=(
-                "STRICT RULES:\n"
+                "STRICT RULES / QUY TAC NGHIEM NGAT:\n"
                 "[ERROR] DO NOT use get_tangent_line() - not in API\n"
+                "[LOI] KHONG dung get_tangent_line() - khong co trong API\n"
                 "[ERROR] DO NOT use always_redraw() with moving tangent\n"
-                "[ERROR] DO NOT use complex ValueTracker\n\n"
-                "[OK] ONLY use:\n"
-                "- axes.plot() to draw graph\n"
+                "[LOI] KHONG dung always_redraw() voi tangent di chuyen\n"
+                "[ERROR] DO NOT use complex ValueTracker\n"
+                "[LOI] KHONG dung ValueTracker phuc tap\n\n"
+                "[OK] ONLY use / CHI dung:\n"
+                "- axes.plot() to draw graph / de ve graph\n"
                 "- Create(), Write(), FadeOut(), Transform()\n"
                 "- MathTex(), Text()\n"
                 "- VGroup().arrange()\n\n"
@@ -210,9 +226,9 @@ class VideoAgents:
 
     def qa_engineer_agent(self, llm):
         return Agent(
-            role="QA Engineer",
-            goal="Run Manim code.",
-            backstory="Run code. If error, report specific error.",
+            role="QA Engineer / Ky su QA",
+            goal="Run Manim code. / Chay ma Manim.",
+            backstory="Run code. If error, report specific error. / Chay ma. Neu loi, bao loi cu the.",
             tools=[file_read_tool, manim_tool],
             llm=llm,
             verbose=True
@@ -220,9 +236,9 @@ class VideoAgents:
 
     def voiceover_artist_agent(self, llm):
         return Agent(
-            role="Voiceover Artist",
-            goal="Create audio from script.",
-            backstory="Read [VOICEOVER SCRIPT] and create MP3.",
+            role="Voiceover Artist / Nghe si Long tieng",
+            goal="Create audio from script. / Tao audio tu script.",
+            backstory="Read [VOICEOVER SCRIPT] and create MP3. / Doc [VOICEOVER SCRIPT] va tao MP3.",
             tools=[file_read_tool, tts_tool],
             verbose=True,
             llm=llm
@@ -230,9 +246,9 @@ class VideoAgents:
 
     def production_engineer_agent(self, llm):
         return Agent(
-            role="Production Engineer",
-            goal="Merge video and audio.",
-            backstory="Use FFmpeg merge.",
+            role="Production Engineer / Ky su San xuat",
+            goal="Merge video and audio. / Ghep video va audio.",
+            backstory="Use FFmpeg merge. / Dung FFmpeg de ghep.",
             tools=[ffmpeg_tool, duration_tool],
             verbose=True,
             llm=llm
