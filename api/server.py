@@ -24,6 +24,12 @@ os.makedirs(WORKSPACE_DIR, exist_ok=True)
 
 def run_video_generation(job_id, topic, language, duration):
     """Run video generation in background thread."""
+    import asyncio
+    
+    # Create new event loop for this thread (required for CrewAI)
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    
     try:
         jobs[job_id]["status"] = "running"
         jobs[job_id]["phase"] = "Initializing / Khoi tao..."
@@ -186,5 +192,7 @@ def health_check():
 if __name__ == "__main__":
     print("[INFO] Starting Manim AI Studio API Server...")
     print("[INFO] Dang khoi dong Manim AI Studio API Server...")
-    print("[INFO] API running at http://localhost:5000")
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    print("[INFO] API running at http://localhost:5001")
+    # Turn off reloader to prevent losing jobs when workspace files change
+    # Tat reloader de tranh mat jobs khi files trong workspace thay doi
+    app.run(host="0.0.0.0", port=5001, debug=False, use_reloader=False)
