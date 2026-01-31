@@ -46,8 +46,8 @@ def run_video_generation(job_id, topic, language, duration):
         
         jobs[job_id]["phase"] = "Loading LLM models / Dang tai mo hinh LLM..."
         
-        llm_flash = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=1)
-        llm_pro = ChatGoogleGenerativeAI(model="gemini-3-flash-preview", temperature=0.4)
+        llm_flash = ChatGoogleGenerativeAI(model="gemini-3-flash-preview", temperature=1)
+        llm_pro = ChatGoogleGenerativeAI(model="gemini-3-pro-preview", temperature=0.4)
         
         agents = VideoAgents()
         tasks = VideoTasks()
@@ -190,9 +190,11 @@ def health_check():
 
 
 if __name__ == "__main__":
+    import os
+    port = int(os.environ.get("PORT", 5001))
     print("[INFO] Starting Manim AI Studio API Server...")
     print("[INFO] Dang khoi dong Manim AI Studio API Server...")
-    print("[INFO] API running at http://localhost:5001")
+    print(f"[INFO] API running at http://localhost:{port}")
     # Turn off reloader to prevent losing jobs when workspace files change
     # Tat reloader de tranh mat jobs khi files trong workspace thay doi
-    app.run(host="0.0.0.0", port=5001, debug=False, use_reloader=False)
+    app.run(host="0.0.0.0", port=port, debug=False, use_reloader=False)

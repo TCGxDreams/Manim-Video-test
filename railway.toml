@@ -1,0 +1,9 @@
+# Configuration for Railway deployment
+# Build with Dockerfile
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+restartPolicyType = "ON_FAILURE"
+healthcheckPath = "/api/health"

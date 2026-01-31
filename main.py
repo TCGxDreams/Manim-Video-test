@@ -27,14 +27,14 @@ if not serper_api_key:
 print("[INFO] Initializing LLM Flash for creative tasks...")
 print("[INFO] Khoi tao LLM Flash cho cac tac vu sang tao...")
 llm_flash = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash",
+    model="gemini-3-flash-preview",
     temperature=1
 )
 
 print("[INFO] Initializing LLM Pro for coding tasks...")
 print("[INFO] Khoi tao LLM Pro cho tac vu viet code...")
 llm_pro = ChatGoogleGenerativeAI(
-    model="gemini-3-flash-preview",
+    model="gemini-3-pro-preview",
     temperature=0.4
 )
 
