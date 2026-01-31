@@ -20,6 +20,7 @@ Du an nay bien mot cau lenh don gian thanh video hoat hinh hoan chinh:
 ## Requirements / Yeu cau
 
 - Python 3.10+
+- Node.js 18+ (for web UI)
 - Manim Community v0.18+
 - FFmpeg
 - Google Gemini API Key
@@ -36,90 +37,86 @@ cd Manim-Video-test
 python -m venv manim
 source manim/bin/activate  # Windows: manim\Scripts\activate
 
-# Install dependencies / Cai dat thu vien
+# Install Python dependencies / Cai dat thu vien Python
 pip install -r requirements.txt
+
+# Install Web UI dependencies / Cai dat thu vien Web UI
+cd web && npm install && cd ..
 
 # Configure API Keys / Cau hinh API Keys
 cp .env.example .env
 # Fill in GOOGLE_API_KEY and SERPER_API_KEY in .env file
-# Dien GOOGLE_API_KEY va SERPER_API_KEY vao file .env
 ```
 
 ## Usage / Su dung
+
+### Option 1: Web UI (Recommended / De xuat)
+
+Start both backend and frontend:
+
+```bash
+# Terminal 1: Start API server
+python api/server.py
+
+# Terminal 2: Start Web UI
+cd web && npm run dev
+```
+
+Open http://localhost:5173 in your browser.
+
+### Option 2: Command Line / Dong lenh
 
 ```bash
 python main.py
 ```
 
-### Change video topic / Thay doi chu de video:
+Edit `video_topic` in `main.py` to change the topic.
 
-Edit `video_topic` in `main.py` / Sua `video_topic` trong `main.py`:
-```python
-# English example:
-video_topic = "Basic Derivatives - derivative of x^n, sin(x), e^x - 1 minute video"
+## Web UI Features / Tinh nang Web UI
 
-# Vietnamese example / Vi du tieng Viet:
-video_topic = "Dao ham co ban - 1 phut video tieng Viet"
-```
-
-### Output files:
-
-All output files are created in `workspace/`:
-Tat ca file output duoc tao trong `workspace/`:
-
-- `video_script.txt` - Script / Kich ban
-- `manim_animation.py` - Manim code
-- `animation_scene.mp4` - Raw video / Video goc
-- `voiceover.mp3` - Audio
-- `final_video.mp4` - Final video / Video hoan chinh
-
-## Configuration / Cau hinh
-
-### Change duration / Thay doi thoi luong:
-Edit in `src/tasks.py` / Sua trong `src/tasks.py`:
-- 130-150 words voiceover = ~1 minute video / phut video
-- 400-450 words voiceover = ~3 minute video / phut video
-
-### LLM Models:
-Edit in `main.py` / Sua trong `main.py`:
-```python
-llm_flash = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
-llm_pro = ChatGoogleGenerativeAI(model="gemini-3-flash-preview")
-```
+- Input video topic / Nhap chu de video
+- Select language (English/Vietnamese) / Chon ngon ngu
+- Select duration (1 min / 3 min) / Chon thoi luong
+- Real-time progress tracking / Theo doi tien trinh thoi gian thuc
+- Video preview and download / Xem truoc va tai video
 
 ## Project Structure / Cau truc du an
 
 ```
 manim_ai_studio/
-├── main.py              # Entry point / Diem khoi dau
+├── main.py              # CLI entry point
+├── api/
+│   └── server.py        # Flask backend API
+├── web/                 # React frontend
+│   ├── src/
+│   │   ├── App.jsx      # Main component
+│   │   └── App.css      # Styles
+│   └── package.json
 ├── src/
 │   ├── agents.py        # AI Agents + Manim Handbook
-│   ├── tasks.py         # Task definitions / Dinh nghia tasks
-│   └── tools/
-│       ├── file_tools.py    # File I/O tools
-│       ├── manim_tools.py   # Manim + FFmpeg tools
-│       └── tts_tools.py     # Text-to-Speech tools
+│   ├── tasks.py         # Task definitions
+│   └── tools/           # Tools (file, manim, tts)
 ├── workspace/           # Output directory (gitignored)
 └── requirements.txt
 ```
 
+## API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/generate` | POST | Start video generation |
+| `/api/status/<id>` | GET | Get generation status |
+| `/api/videos` | GET | List generated videos |
+| `/api/videos/<name>` | GET | Download video file |
+| `/api/health` | GET | Health check |
+
 ## Manim Handbook / So tay Manim
 
 Manim code follows rules in `MANIM_HANDBOOK` (agents.py):
-Code Manim tuan theo cac quy tac trong `MANIM_HANDBOOK` (agents.py):
 
 - **DO NOT use / KHONG dung**: `get_tangent_line()` (not in Manim Community)
 - **USE / DUNG**: `axes.plot()`, `MathTex()`, `Transform()`, `VGroup()`
 - **Color palette / Bang mau**: TEAL_E (graph), GOLD_E (highlight), BLUE_E (area)
-
-## Language Support / Ho tro ngon ngu
-
-The system automatically detects language:
-He thong tu dong phat hien ngon ngu:
-
-- TTS tool auto-detects English/Vietnamese
-- Manim tool can render Vietnamese text
-- All logs are bilingual (English/Vietnamese)
 
 ## License
 
