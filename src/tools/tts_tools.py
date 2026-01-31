@@ -4,7 +4,7 @@ from gtts import gTTS
 from langchain.tools import BaseTool 
 
 class TextToSpeechTool(BaseTool):
-    """Enhanced TTS tool với nhiều tính năng hơn."""
+    """Enhanced TTS tool with multiple features."""
     
     name: str = "Text to Speech Tool"
     description: str = (
@@ -15,18 +15,18 @@ class TextToSpeechTool(BaseTool):
         "Returns the file path and audio duration in seconds."
     )
 
-    # Các pattern để detect ngôn ngữ
-    VIETNAMESE_CHARS = set('àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬÈÉẺẼẸÊỀẾỂỄỆÌÍỈĨỊÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢÙÚỦŨỤƯỪỨỬỮỰỲÝỶỸỴĐ')
+    VIETNAMESE_CHARS = set('aeiouydAEIOUYD')
 
     def _detect_language(self, text: str) -> str:
-        """Tự động phát hiện ngôn ngữ dựa trên ký tự."""
-        text_chars = set(text)
-        if text_chars & self.VIETNAMESE_CHARS:
-            return 'vi'
+        """Auto-detect language based on characters."""
+        vietnamese_pattern = 'àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬÈÉẺẼẸÊỀẾỂỄỆÌÍỈĨỊÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢÙÚỦŨỤƯỪỨỬỮỰỲÝỶỸỴĐ'
+        for char in text:
+            if char in vietnamese_pattern:
+                return 'vi'
         return 'en'
 
     def _get_audio_duration(self, file_path: str) -> float:
-        """Lấy thời lượng file MP3 bằng mutagen."""
+        """Get MP3 file duration using mutagen."""
         try:
             audio = MP3(file_path)
             return audio.info.length
@@ -46,7 +46,7 @@ class TextToSpeechTool(BaseTool):
         try:
             os.makedirs(workspace_dir, exist_ok=True)
             
-            # Auto-detect language nếu cần
+            # Auto-detect language if needed
             if language == "auto":
                 language = self._detect_language(text)
             
@@ -55,19 +55,19 @@ class TextToSpeechTool(BaseTool):
             if language not in supported_langs:
                 language = 'en'
             
-            # Tạo audio với gTTS
+            # Create audio with gTTS
             tts = gTTS(text=text, lang=language, slow=slow)
             tts.save(file_path)
             
-            # Lấy thời lượng
+            # Get duration
             duration = self._get_audio_duration(file_path)
             duration_str = f"{duration:.2f}s" if duration > 0 else "unknown"
             
             return (
                 f"[OK] Audio file saved successfully!\n"
-                f"Path: Path: {file_path}\n"
-                f"Language: Language: {language}\n"
-                f"Duration: Duration: {duration_str}"
+                f"Path: {file_path}\n"
+                f"Language: {language}\n"
+                f"Duration: {duration_str}"
             )
             
         except Exception as e:
@@ -75,7 +75,7 @@ class TextToSpeechTool(BaseTool):
 
 
 class EnhancedTTSTool(BaseTool):
-    """TTS tool với tùy chọn tốc độ và ngữ điệu."""
+    """TTS tool with speed and pitch control."""
     
     name: str = "Enhanced Text to Speech Tool"
     description: str = (
@@ -85,12 +85,11 @@ class EnhancedTTSTool(BaseTool):
         "Note: Speed adjustment requires ffmpeg."
     )
 
-    VIETNAMESE_CHARS = set('àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬÈÉẺẼẸÊỀẾỂỄỆÌÍỈĨỊÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢÙÚỦŨỤƯỪỨỬỮỰỲÝỶỸỴĐ')
-
     def _detect_language(self, text: str) -> str:
-        text_chars = set(text)
-        if text_chars & self.VIETNAMESE_CHARS:
-            return 'vi'
+        vietnamese_pattern = 'àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬÈÉẺẼẸÊỀẾỂỄỆÌÍỈĨỊÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢÙÚỦŨỤƯỪỨỬỮỰỲÝỶỸỴĐ'
+        for char in text:
+            if char in vietnamese_pattern:
+                return 'vi'
         return 'en'
 
     def _get_audio_duration(self, file_path: str) -> float:
@@ -120,20 +119,20 @@ class EnhancedTTSTool(BaseTool):
             if language == "auto":
                 language = self._detect_language(text)
             
-            # Tạo audio ban đầu
+            # Create initial audio
             tts = gTTS(text=text, lang=language, slow=False)
             
-            # Nếu không cần điều chỉnh tốc độ
+            # If no speed adjustment needed
             if abs(speed - 1.0) < 0.01:
                 tts.save(final_file)
             else:
-                # Lưu file tạm và điều chỉnh tốc độ bằng ffmpeg
+                # Save temp file and adjust speed with ffmpeg
                 tts.save(temp_file)
                 
-                # Giới hạn speed trong khoảng hợp lý
+                # Limit speed to reasonable range
                 speed = max(0.5, min(2.0, speed))
                 
-                # Sử dụng atempo filter (chỉ hỗ trợ 0.5-2.0)
+                # Use atempo filter (only supports 0.5-2.0)
                 command = [
                     "ffmpeg", "-y",
                     "-i", temp_file,
@@ -143,7 +142,7 @@ class EnhancedTTSTool(BaseTool):
                 
                 subprocess.run(command, capture_output=True, check=True)
                 
-                # Xóa file tạm
+                # Delete temp file
                 if os.path.exists(temp_file):
                     os.remove(temp_file)
             
@@ -152,10 +151,10 @@ class EnhancedTTSTool(BaseTool):
             
             return (
                 f"[OK] Audio file generated!\n"
-                f"Path: Path: {final_file}\n"
-                f"Language: Language: {language}\n"
-                f"⚡ Speed: {speed}x\n"
-                f"Duration: Duration: {duration_str}"
+                f"Path: {final_file}\n"
+                f"Language: {language}\n"
+                f"Speed: {speed}x\n"
+                f"Duration: {duration_str}"
             )
             
         except Exception as e:

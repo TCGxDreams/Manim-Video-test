@@ -4,11 +4,11 @@ import json
 import re
 from langchain.tools import BaseTool 
 
-# Đảm bảo thư mục workspace tồn tại
+# Ensure workspace directory exists
 os.makedirs("workspace", exist_ok=True)
 
 class FFmpegTool(BaseTool):
-    """Enhanced FFmpeg tool với tính năng điều chỉnh tốc độ và âm thanh."""
+    """Enhanced FFmpeg tool with speed adjustment and audio normalization."""
     
     name: str = "FFmpeg Video-Audio Merger"
     description: str = (
@@ -19,7 +19,7 @@ class FFmpegTool(BaseTool):
     )
 
     def _get_duration(self, file_path: str) -> float:
-        """Lấy thời lượng của file media bằng ffprobe."""
+        """Get media file duration using ffprobe."""
         try:
             result = subprocess.run(
                 [
@@ -50,23 +50,23 @@ class FFmpegTool(BaseTool):
         if not os.path.exists(audio_path):
             return f"Error: Audio file not found at {audio_path}"
 
-        # Lấy thời lượng của cả hai file
+        # Get duration of both files
         video_duration = self._get_duration(video_path)
         audio_duration = self._get_duration(audio_path)
 
         if video_duration <= 0 or audio_duration <= 0:
-            # Fallback nếu không lấy được duration
+            # Fallback if unable to get duration
             speed_adjust = False
 
-        # Tính toán hệ số tốc độ
+        # Calculate speed factor
         if speed_adjust and video_duration > 0 and audio_duration > 0:
-            # speed_factor > 1: video chạy nhanh hơn, < 1: video chạy chậm hơn
+            # speed_factor > 1: video runs faster, < 1: video runs slower
             speed_factor = video_duration / audio_duration
             
-            # Giới hạn speed factor trong khoảng hợp lý (0.5x - 2x)
+            # Limit speed factor to reasonable range (0.5x - 2x)
             speed_factor = max(0.5, min(2.0, speed_factor))
             
-            # Sử dụng setpts filter để điều chỉnh tốc độ video
+            # Use setpts filter to adjust video speed
             video_filter = f"setpts={1/speed_factor}*PTS"
             
             command = [
@@ -87,11 +87,11 @@ class FFmpegTool(BaseTool):
             ]
             
             duration_info = (
-                f"\nInfo: Duration info: Video={video_duration:.2f}s, Audio={audio_duration:.2f}s, "
+                f"\nInfo: Video={video_duration:.2f}s, Audio={audio_duration:.2f}s, "
                 f"Speed factor={speed_factor:.2f}x"
             )
         else:
-            # Merge đơn giản không điều chỉnh tốc độ
+            # Simple merge without speed adjustment
             command = [
                 "ffmpeg",
                 "-y",
@@ -111,11 +111,11 @@ class FFmpegTool(BaseTool):
         except subprocess.CalledProcessError as e:
             return f"[ERROR] FFmpeg execution failed: {e.stderr}"
         except FileNotFoundError:
-            return "[ERROR] Error: 'ffmpeg' command not found. Please ensure FFmpeg is installed and accessible in your system's PATH."
+            return "[ERROR] 'ffmpeg' command not found. Please ensure FFmpeg is installed."
 
 
 class ManimExecutionTool(BaseTool):
-    """Enhanced Manim execution tool với nhiều tùy chọn chất lượng."""
+    """Enhanced Manim execution tool with quality options."""
     
     name: str = "Manim Code Execution Tool"
     description: str = (
@@ -148,7 +148,7 @@ YourTextHere
 '''
 
     def _get_video_duration(self, video_path: str) -> float:
-        """Lấy thời lượng video bằng ffprobe."""
+        """Get video duration using ffprobe."""
         try:
             result = subprocess.run(
                 [
@@ -163,18 +163,21 @@ YourTextHere
             return 0.0
 
     def _detect_vietnamese(self, code: str) -> bool:
-        """Kiểm tra xem code có chứa ký tự tiếng Việt không."""
-        vietnamese_pattern = r'[àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬÈÉẺẼẸÊỀẾỂỄỆÌÍỈĨỊÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢÙÚỦŨỤƯỪỨỬỮỰỲÝỶỸỴĐ]'
-        return bool(re.search(vietnamese_pattern, code))
+        """Check if code contains Vietnamese characters."""
+        vietnamese_pattern = r'[aeiouydAEIOUYD]'
+        vietnamese_chars = 'àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬÈÉẺẼẸÊỀẾỂỄỆÌÍỈĨỊÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢÙÚỦŨỤƯỪỨỬỮỰỲÝỶỸỴĐ'
+        for char in code:
+            if char in vietnamese_chars:
+                return True
+        return False
 
     def _inject_vietnamese_support(self, code: str) -> str:
-        """Thêm hỗ trợ tiếng Việt nếu cần."""
+        """Add Vietnamese support if needed."""
         if not self._detect_vietnamese(code):
             return code
         
-        # Thêm import TexTemplate nếu chưa có
+        # Add TexTemplate import if not exists
         if "TexTemplate" not in code:
-            # Tìm vị trí import cuối cùng
             import_section = """
 # Vietnamese language support
 from manim import TexTemplate
@@ -187,7 +190,7 @@ vietnamese_template.preamble = r'''
 \\usepackage{amssymb}
 '''
 """
-            # Chèn sau dòng import manim
+            # Insert after manim import
             if "from manim import" in code:
                 code = code.replace("from manim import *", "from manim import *" + import_section)
             elif "import manim" in code:
@@ -217,17 +220,17 @@ vietnamese_template.preamble = r'''
         py_file_path_to_write = os.path.join("workspace", f"{file_name}.py")
         py_file_path_for_command = f"{file_name}.py"
         
-        # Inject Vietnamese support nếu cần
+        # Inject Vietnamese support if needed
         manim_code = self._inject_vietnamese_support(manim_code)
 
-        # Ghi mã Manim vào file .py
+        # Write Manim code to .py file
         try:
             with open(py_file_path_to_write, "w", encoding="utf-8") as f:
                 f.write(manim_code)
         except Exception as e:
             return f"[ERROR] Error writing Manim code to file: {e}"
 
-        # Xây dựng lệnh Manim
+        # Build Manim command
         command = [
             "manim",
             quality_info["flag"],
@@ -268,19 +271,19 @@ vietnamese_template.preamble = r'''
             else:
                 video_file_path = expected_video_path
             
-            # Lấy thời lượng video
+            # Get video duration
             duration = self._get_video_duration(video_file_path)
             duration_str = f"{duration:.2f}s" if duration > 0 else "unknown"
             
             return (
                 f"[OK] Manim scene rendered successfully!\n"
-                f"Path: Video path: {video_file_path}\n"
-                f"Resolution: Resolution: {quality_info['resolution']} @ {fps}fps\n"
-                f"Duration: Duration: {duration_str}"
+                f"Video path: {video_file_path}\n"
+                f"Resolution: {quality_info['resolution']} @ {fps}fps\n"
+                f"Duration: {duration_str}"
             )
             
         except subprocess.CalledProcessError as e:
-            # Phân loại lỗi chi tiết
+            # Detailed error classification
             stderr = e.stderr
             stdout = e.stdout
             
@@ -288,38 +291,38 @@ vietnamese_template.preamble = r'''
             suggestion = ""
             
             if "SyntaxError" in stderr or "SyntaxError" in stdout:
-                error_type = "🔴 SYNTAX ERROR"
-                suggestion = "Kiểm tra cú pháp Python: dấu ngoặc, dấu hai chấm, indent."
+                error_type = "SYNTAX ERROR"
+                suggestion = "Check Python syntax: parentheses, colons, indentation."
             elif "ImportError" in stderr or "ModuleNotFoundError" in stderr:
-                error_type = "🟠 IMPORT ERROR"
-                suggestion = "Module không tồn tại. Chỉ sử dụng các class từ 'from manim import *'."
+                error_type = "IMPORT ERROR"
+                suggestion = "Module does not exist. Only use classes from 'from manim import *'."
             elif "AttributeError" in stderr:
-                error_type = "🟡 ATTRIBUTE ERROR"
-                suggestion = "Method hoặc property không tồn tại. Kiểm tra tên method đúng chính tả."
+                error_type = "ATTRIBUTE ERROR"
+                suggestion = "Method or property does not exist. Check method name spelling."
             elif "TypeError" in stderr:
-                error_type = "🟣 TYPE ERROR"
-                suggestion = "Sai kiểu dữ liệu. Kiểm tra các tham số truyền vào."
+                error_type = "TYPE ERROR"
+                suggestion = "Wrong data type. Check parameters passed."
             elif "ValueError" in stderr:
-                error_type = "🔵 VALUE ERROR"
-                suggestion = "Giá trị không hợp lệ."
+                error_type = "VALUE ERROR"
+                suggestion = "Invalid value."
             elif "RuntimeError" in stderr or "Exception" in stderr:
-                error_type = "⚫ RUNTIME ERROR"
-                suggestion = "Lỗi khi thực thi. Kiểm tra logic trong construct()."
+                error_type = "RUNTIME ERROR"
+                suggestion = "Error during execution. Check logic in construct()."
             
             error_message = (
                 f"[ERROR] {error_type} - Manim execution failed (code {e.returncode})\n\n"
-                f"💡 Gợi ý: {suggestion}\n\n"
+                f"Suggestion: {suggestion}\n\n"
                 f"--- STDERR ---\n{stderr}\n\n"
                 f"--- STDOUT ---\n{stdout}"
             )
             return error_message
             
         except FileNotFoundError:
-            return "[ERROR] Error: 'manim' command not found. Please ensure Manim is installed and accessible in your system's PATH."
+            return "[ERROR] 'manim' command not found. Please ensure Manim is installed."
 
 
 class VideoDurationTool(BaseTool):
-    """Tool để lấy thông tin thời lượng của video hoặc audio."""
+    """Tool to get video or audio duration information."""
     
     name: str = "Media Duration Tool"
     description: str = (
@@ -331,7 +334,7 @@ class VideoDurationTool(BaseTool):
         file_path = os.path.join("workspace", file_name)
         
         if not os.path.exists(file_path):
-            return f"[ERROR] Error: File not found at {file_path}"
+            return f"[ERROR] File not found at {file_path}"
         
         try:
             result = subprocess.run(

@@ -13,27 +13,27 @@ class VideoTasks:
     def storytelling_task(self, agent, topic):
         return Task(
             description=(
-                f"Nghiên cứu chủ đề '{topic}', sau đó viết một kịch bản video ngắn gọn.\n\n"
-                "YÊU CẦU QUAN TRỌNG:\n"
-                "1. Phần [VOICEOVER SCRIPT] phải có độ dài khoảng 130-150 từ (cho video 1 phút).\n"
-                "2. Phần [VISUAL SCRIPT] nên chia thành 3-4 SCENE với timing.\n"
-                "3. Thêm phần [TIMING] ở cuối với tổng thời lượng ước tính.\n\n"
+                f"Research the topic '{topic}', then write a short video script.\n\n"
+                "IMPORTANT REQUIREMENTS:\n"
+                "1. [VOICEOVER SCRIPT] should be 130-150 words (for 1-minute video).\n"
+                "2. [VISUAL SCRIPT] should have 3-4 SCENEs with timing.\n"
+                "3. Add [TIMING] section at the end with estimated total duration.\n\n"
                 "FORMAT:\n"
                 "```\n"
                 "[VISUAL SCRIPT]\n"
-                "SCENE 1 (10s): Mô tả scene 1\n"
-                "SCENE 2 (15s): Mô tả scene 2\n"
+                "SCENE 1 (10s): Description of scene 1\n"
+                "SCENE 2 (15s): Description of scene 2\n"
                 "...\n\n"
                 "[VOICEOVER SCRIPT]\n"
-                "Nội dung lời thoại...\n\n"
+                "Voiceover content...\n\n"
                 "[TIMING]\n"
-                "- Tổng thời lượng video: ~60s (1 phút)\n"
-                "- Tổng thời lượng audio ước tính: ~55s\n"
+                "- Total video duration: ~60s (1 minute)\n"
+                "- Estimated audio duration: ~55s\n"
                 "```\n\n"
-                f"Cuối cùng, sử dụng công cụ 'File Write Tool' để lưu toàn bộ kịch bản vào tệp '{self.script_file}'."
+                f"Finally, use the 'File Write Tool' to save the script to '{self.script_file}'."
             ),
             expected_output=(
-                f"Chuỗi xác nhận từ công cụ 'File Write Tool' cho biết tệp '{self.script_file}' đã được ghi thành công."
+                f"Confirmation string from 'File Write Tool' indicating '{self.script_file}' was written successfully."
             ),
             agent=agent
         )
@@ -41,16 +41,16 @@ class VideoTasks:
     def manim_development_task(self, agent):
         return Task(
             description=(
-                f"Đọc nội dung từ tệp '{self.script_file}'. Dựa vào phần [VISUAL SCRIPT], hãy viết mã Manim hoàn chỉnh.\n\n"
-                "YÊU CẦU QUAN TRỌNG:\n"
-                "1. Tuân thủ nghiêm ngặt SỔ TAY LẬP TRÌNH MANIM trong backstory của bạn.\n"
-                "2. Sử dụng timing từ script để đặt run_time phù hợp cho mỗi animation.\n"
-                "3. Thêm self.wait() giữa các scene để người xem có thời gian hiểu.\n"
-                "4. Render với chất lượng 'h' (1080p) khi hoàn tất.\n\n"
-                f"Sau đó, sử dụng công cụ 'File Write Tool' để lưu mã vào tệp '{self.manim_code_file}'."
+                f"Read content from file '{self.script_file}'. Based on [VISUAL SCRIPT], write complete Manim code.\n\n"
+                "IMPORTANT REQUIREMENTS:\n"
+                "1. Strictly follow the MANIM PROGRAMMING HANDBOOK in your backstory.\n"
+                "2. Use timing from script to set appropriate run_time for each animation.\n"
+                "3. Add self.wait() between scenes for viewers to understand.\n"
+                "4. Render with quality 'h' (1080p) when done.\n\n"
+                f"Then, use 'File Write Tool' to save code to '{self.manim_code_file}'."
             ),
             expected_output=(
-                f"Chuỗi xác nhận từ 'File Write Tool' cho biết tệp '{self.manim_code_file}' đã được ghi thành công."
+                f"Confirmation string from 'File Write Tool' indicating '{self.manim_code_file}' was written successfully."
             ),
             agent=agent
         )
@@ -58,19 +58,19 @@ class VideoTasks:
     def qa_task(self, agent):
         return Task(
             description=(
-                f"Đọc nội dung mã Python từ tệp '{self.manim_code_file}'.\n"
-                "Tìm tên của lớp Manim trong mã.\n\n"
-                "Sử dụng công cụ 'Manim Code Execution Tool' với các tham số:\n"
-                "- manim_code: nội dung mã Python\n"
-                "- class_name: tên lớp Manim\n"
-                "- quality: 'h' (1080p - mặc định, chất lượng cao)\n"
-                "- fps: 30 (frame rate mặc định)\n\n"
-                "NẾU THẤT BẠI: Tạo báo cáo lỗi theo format trong backstory của bạn.\n"
-                "NẾU THÀNH CÔNG: Ghi nhận thời lượng video và xác nhận thành công."
+                f"Read Python code content from file '{self.manim_code_file}'.\n"
+                "Find the Manim class name in the code.\n\n"
+                "Use 'Manim Code Execution Tool' with parameters:\n"
+                "- manim_code: Python code content\n"
+                "- class_name: Manim class name\n"
+                "- quality: 'h' (1080p - default, high quality)\n"
+                "- fps: 30 (default frame rate)\n\n"
+                "IF FAILED: Create error report with specific details.\n"
+                "IF SUCCESS: Note video duration and confirm success."
             ),
             expected_output=(
-                "Một chuỗi xác nhận việc thực thi Manim thành công (bao gồm đường dẫn video và thời lượng) "
-                "hoặc một báo cáo lỗi chi tiết theo format chuẩn nếu thất bại."
+                "A confirmation string of successful Manim execution (including video path and duration) "
+                "or a detailed error report if failed."
             ),
             agent=agent
         )
@@ -78,17 +78,17 @@ class VideoTasks:
     def voiceover_task(self, agent):
         return Task(
             description=(
-                f"Đọc nội dung từ tệp '{self.script_file}'.\n\n"
-                "Sử dụng phần [VOICEOVER SCRIPT] để tạo tệp âm thanh bằng công cụ 'Text to Speech Tool'.\n\n"
-                "LƯU Ý:\n"
-                "1. Công cụ sẽ tự động detect ngôn ngữ (English/Vietnamese).\n"
-                "2. Ghi nhận thời lượng audio được trả về.\n"
-                "3. Nếu nội dung phức tạp, có thể dùng slow=True để đọc chậm hơn.\n\n"
-                f"Lưu audio vào tệp '{self.voiceover_file}'."
+                f"Read content from file '{self.script_file}'.\n\n"
+                "Use [VOICEOVER SCRIPT] section to create audio file using 'Text to Speech Tool'.\n\n"
+                "NOTE:\n"
+                "1. Tool will auto-detect language (English/Vietnamese).\n"
+                "2. Note the audio duration returned.\n"
+                "3. For complex content, use slow=True for slower speech.\n\n"
+                f"Save audio to '{self.voiceover_file}'."
             ),
             expected_output=(
-                f"Chuỗi xác nhận từ 'Text to Speech Tool' cho biết tệp '{self.voiceover_file}' đã được lưu thành công, "
-                "bao gồm thông tin về thời lượng audio."
+                f"Confirmation from 'Text to Speech Tool' indicating '{self.voiceover_file}' was saved successfully, "
+                "including audio duration info."
             ),
             agent=agent
         )
@@ -96,17 +96,17 @@ class VideoTasks:
     def production_task(self, agent):
         return Task(
             description=(
-                f"Ghép tệp video '{self.silent_video_file}' với tệp âm thanh '{self.voiceover_file}'.\n\n"
-                "Sử dụng công cụ 'FFmpeg Video-Audio Merger' với các tham số:\n"
-                "- video_file: '{self.silent_video_file}'\n"
-                "- audio_file: '{self.voiceover_file}'\n"
-                "- output_file: '{self.final_video_file}'\n"
-                "- speed_adjust: True (tự động điều chỉnh tốc độ video để khớp audio)\n\n"
-                "TRƯỚC KHI MERGE: Có thể dùng 'Media Duration Tool' để kiểm tra thời lượng của cả hai file."
+                f"Merge video file '{self.silent_video_file}' with audio file '{self.voiceover_file}'.\n\n"
+                "Use 'FFmpeg Video-Audio Merger' with parameters:\n"
+                f"- video_file: '{self.silent_video_file}'\n"
+                f"- audio_file: '{self.voiceover_file}'\n"
+                f"- output_file: '{self.final_video_file}'\n"
+                "- speed_adjust: True (auto-adjust video speed to match audio)\n\n"
+                "BEFORE MERGE: Can use 'Media Duration Tool' to check duration of both files."
             ),
             expected_output=(
-                f"Một thông báo xác nhận video cuối cùng đã được tạo tại 'workspace/{self.final_video_file}', "
-                "bao gồm thông tin về duration và speed adjustment nếu có."
+                f"Confirmation message that final video was created at 'workspace/{self.final_video_file}', "
+                "including duration and speed adjustment info if any."
             ),
             agent=agent
         )

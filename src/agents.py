@@ -1,4 +1,4 @@
-# src/agents.py - 3BLUE1BROWN AESTHETIC + MANIM COMMUNITY COMPATIBLE
+# src/agents.py - MANIM COMMUNITY COMPATIBLE
 
 from crewai import Agent
 from crewai_tools import SerperDevTool, ScrapeWebsiteTool
@@ -6,7 +6,7 @@ from .tools.file_tools import FileWriteTool, CustomFileReadTool
 from .tools.manim_tools import ManimExecutionTool, FFmpegTool, VideoDurationTool
 from .tools.tts_tools import TextToSpeechTool, EnhancedTTSTool
 
-# Khởi tạo các công cụ
+# Initialize tools
 search_tool = SerperDevTool()
 scrape_tool = ScrapeWebsiteTool()
 file_write_tool = FileWriteTool()
@@ -19,35 +19,35 @@ duration_tool = VideoDurationTool()
 
 
 # ============================================================================
-# SỔ TAY MANIM - MANIM COMMUNITY v0.18 COMPATIBLE
+# MANIM HANDBOOK - MANIM COMMUNITY v0.18 COMPATIBLE
 # ============================================================================
 MANIM_HANDBOOK = '''
-=== SỔ TAY MANIM - MANIM COMMUNITY v0.18 ===
+=== MANIM HANDBOOK - MANIM COMMUNITY v0.18 ===
 
-[WARNING] QUAN TRỌNG: Đây là Manim Community, KHÔNG phải manimgl của 3B1B!
-[WARNING] KHÔNG dùng: get_tangent_line() - không có trong API này
+[WARNING] This is Manim Community, NOT manimgl from 3B1B!
+[WARNING] Do NOT use: get_tangent_line() - not available in this API
 
-
-[COLORS] BẢNG MÀU
-
+---
+COLOR PALETTE
+---
 
 TEAL_E = "#49A88F"   # Graph 
 GOLD_E = "#C78D46"   # Highlights
 BLUE_E = "#1C758A"   # Area
 GREY_A = "#DDDDDD"   # Axes
 
+---
+[WARNING] DO NOT USE TANGENT LINE - TOO COMPLEX
+---
 
-[WARNING] KHÔNG DÙNG TANGENT LINE - QUÁ PHỨC TẠP
+Instead of dynamic tangent lines, use:
+- Display derivative formula
+- Use arrows to show slope
+- Use simple animations with Transform
 
-
-Thay vì dùng tangent line động, hãy dùng:
-- Hiển thị công thức đạo hàm
-- Dùng arrow để chỉ độ dốc
-- Dùng animations đơn giản với Transform
-
-
-MẪU 1: VIDEO ĐẠO HÀM ĐƠN GIẢN (ĐÃ TEST)
-
+---
+TEMPLATE 1: SIMPLE DERIVATIVE VIDEO (TESTED)
+---
 
 ```python
 from manim import *
@@ -61,7 +61,7 @@ GREY_A = "#DDDDDD"
 class DerivativeVideo(Scene):
     def construct(self):
         # === SCENE 1: Power Rule ===
-        title = Text("Đạo hàm x^n", font_size=36).to_corner(UL)
+        title = Text("Derivative x^n", font_size=36).to_corner(UL)
         
         axes = Axes(
             x_range=[0, 4, 1], y_range=[0, 10, 2],
@@ -88,7 +88,7 @@ class DerivativeVideo(Scene):
         self.play(FadeOut(VGroup(title, axes, graph, formula1)), run_time=1)
         
         # === SCENE 2: sin(x) ===
-        title2 = Text("Đạo hàm sin(x)", font_size=36).to_corner(UL)
+        title2 = Text("Derivative sin(x)", font_size=36).to_corner(UL)
         
         axes2 = Axes(
             x_range=[0, 2*PI, PI/2], y_range=[-1.5, 1.5, 0.5],
@@ -110,7 +110,7 @@ class DerivativeVideo(Scene):
         self.play(FadeOut(VGroup(title2, axes2, sin_graph, cos_graph, formula3)), run_time=1)
         
         # === SCENE 3: e^x ===
-        title3 = Text("Đạo hàm e^x", font_size=36).to_corner(UL)
+        title3 = Text("Derivative e^x", font_size=36).to_corner(UL)
         
         axes3 = Axes(
             x_range=[-1, 3, 1], y_range=[0, 8, 2],
@@ -121,7 +121,7 @@ class DerivativeVideo(Scene):
         exp_graph = axes3.plot(lambda x: np.exp(x), x_range=[-1, 2], color=TEAL_E, stroke_width=4)
         
         formula4 = MathTex(r"\\frac{d}{dx}[e^x] = e^x", font_size=40).to_edge(DOWN, buff=0.5)
-        special = Text("Hàm số đặc biệt!", font_size=28, color=GOLD_E).next_to(formula4, UP, buff=0.3)
+        special = Text("Special function!", font_size=28, color=GOLD_E).next_to(formula4, UP, buff=0.3)
         
         self.play(Write(title3), Create(axes3), run_time=1.5)
         self.play(Create(exp_graph), run_time=2)
@@ -132,7 +132,7 @@ class DerivativeVideo(Scene):
         self.play(FadeOut(VGroup(title3, axes3, exp_graph, formula4, special)), run_time=1)
         
         # === SCENE 4: Summary ===
-        summary_title = Text("Tổng kết", font_size=42, color=WHITE).shift(UP*2.5)
+        summary_title = Text("Summary", font_size=42, color=WHITE).shift(UP*2.5)
         
         formulas = VGroup(
             MathTex(r"\\frac{d}{dx}[x^n] = n \\cdot x^{n-1}"),
@@ -146,41 +146,41 @@ class DerivativeVideo(Scene):
             self.play(f.animate.set_color(GOLD_E), run_time=0.3)
             self.play(f.animate.set_color(WHITE), run_time=0.3)
         
-        thanks = Text("Cảm ơn bạn đã xem!", font_size=36).shift(DOWN*2.5)
+        thanks = Text("Thanks for watching!", font_size=36).shift(DOWN*2.5)
         self.play(Write(thanks), run_time=1)
         self.wait(2)
 ```
 
+---
+MANDATORY RULES
+---
 
-LUẬT BẮT BUỘC
-
-
-[OK] DÙNG:
-- axes.plot() để vẽ đồ thị
+[OK] USE:
+- axes.plot() to draw graphs
 - Create(), Write(), FadeIn(), FadeOut()
 - Transform(), ReplacementTransform()
-- VGroup() để nhóm objects
+- VGroup() to group objects
 - .to_corner(UL), .to_edge(DOWN), .move_to(ORIGIN)
 
-[ERROR] KHÔNG DÙNG:
-- get_tangent_line() - KHÔNG TỒN TẠI
-- always_redraw() với tangent - QUÁ PHỨC TẠP
-- ValueTracker với moving dots - DỄ LỖI
+[ERROR] DO NOT USE:
+- get_tangent_line() - DOES NOT EXIST
+- always_redraw() with tangent - TOO COMPLEX
+- ValueTracker with moving dots - ERROR PRONE
 
-=== KẾT THÚC SỔ TAY ===
+=== END OF HANDBOOK ===
 '''
 
 
 class VideoAgents:
     def storyteller_agent(self, llm):
         return Agent(
-            role="Nhà biên kịch Video đơn giản",
-            goal="Viết kịch bản video đơn giản, không yêu cầu tangent line hay moving dots.",
+            role="Simple Video Scriptwriter",
+            goal="Write simple video scripts without tangent lines or moving dots.",
             backstory=(
-                "Bạn viết kịch bản đơn giản:\n"
-                "- KHÔNG mô tả đường tiếp tuyến di chuyển\n"
-                "- KHÔNG mô tả điểm di chuyển trên graph\n"
-                "- CHỈ mô tả: vẽ graph, hiển thị công thức, transform formula\n"
+                "You write simple scripts:\n"
+                "- DO NOT describe moving tangent lines\n"
+                "- DO NOT describe moving points on graph\n"
+                "- ONLY describe: draw graph, display formula, transform formula\n"
             ),
             tools=[file_write_tool],
             llm=llm,
@@ -189,15 +189,15 @@ class VideoAgents:
 
     def manim_developer_agent(self, llm_pro):
         return Agent(
-            role="Lập trình viên Manim Community v0.18",
-            goal="Viết mã Manim đơn giản, KHÔNG dùng tangent line, KHÔNG dùng always_redraw.",
+            role="Manim Community v0.18 Developer",
+            goal="Write simple Manim code, DO NOT use tangent line, DO NOT use always_redraw.",
             backstory=(
-                "QUY TẮC NGHIÊM NGẶT:\n"
-                "[ERROR] KHÔNG dùng get_tangent_line() - không có trong API\n"
-                "[ERROR] KHÔNG dùng always_redraw() với moving tangent\n"
-                "[ERROR] KHÔNG dùng ValueTracker phức tạp\n\n"
-                "[OK] CHỈ dùng:\n"
-                "- axes.plot() để vẽ graph\n"
+                "STRICT RULES:\n"
+                "[ERROR] DO NOT use get_tangent_line() - not in API\n"
+                "[ERROR] DO NOT use always_redraw() with moving tangent\n"
+                "[ERROR] DO NOT use complex ValueTracker\n\n"
+                "[OK] ONLY use:\n"
+                "- axes.plot() to draw graph\n"
                 "- Create(), Write(), FadeOut(), Transform()\n"
                 "- MathTex(), Text()\n"
                 "- VGroup().arrange()\n\n"
@@ -210,9 +210,9 @@ class VideoAgents:
 
     def qa_engineer_agent(self, llm):
         return Agent(
-            role="Kỹ sư QA",
-            goal="Chạy mã Manim.",
-            backstory="Chạy mã. Nếu lỗi, báo lỗi cụ thể.",
+            role="QA Engineer",
+            goal="Run Manim code.",
+            backstory="Run code. If error, report specific error.",
             tools=[file_read_tool, manim_tool],
             llm=llm,
             verbose=True
@@ -220,9 +220,9 @@ class VideoAgents:
 
     def voiceover_artist_agent(self, llm):
         return Agent(
-            role="Nghệ sĩ Lồng tiếng",
-            goal="Tạo audio từ script.",
-            backstory="Đọc [VOICEOVER SCRIPT] và tạo MP3.",
+            role="Voiceover Artist",
+            goal="Create audio from script.",
+            backstory="Read [VOICEOVER SCRIPT] and create MP3.",
             tools=[file_read_tool, tts_tool],
             verbose=True,
             llm=llm
@@ -230,9 +230,9 @@ class VideoAgents:
 
     def production_engineer_agent(self, llm):
         return Agent(
-            role="Kỹ sư Sản xuất",
-            goal="Ghép video và audio.",
-            backstory="Dùng FFmpeg merge.",
+            role="Production Engineer",
+            goal="Merge video and audio.",
+            backstory="Use FFmpeg merge.",
             tools=[ffmpeg_tool, duration_tool],
             verbose=True,
             llm=llm

@@ -1,84 +1,84 @@
 # Manim AI Studio
 
-Hệ thống AI tự động sản xuất video toán học hoạt hình, sử dụng Google Gemini và Manim Community.
+AI-powered automated video production system for mathematical animations, using Google Gemini and Manim Community.
 
-## Tổng quan
+## Overview
 
-Dự án biến một câu lệnh đơn giản thành video hoạt hình hoàn chỉnh:
-- **Storyteller Agent**: Viết kịch bản video
-- **Manim Developer Agent**: Viết code Manim 
-- **QA Agent**: Kiểm tra và fix lỗi code
-- **Voiceover Agent**: Tạo lời thoại TTS
-- **Production Agent**: Ghép video + audio
+This project transforms a simple prompt into a complete animated video:
+- **Storyteller Agent**: Writes video script
+- **Manim Developer Agent**: Writes Manim code 
+- **QA Agent**: Tests and fixes code errors
+- **Voiceover Agent**: Creates TTS voiceover
+- **Production Agent**: Merges video + audio
 
-## Yêu cầu
+## Requirements
 
 - Python 3.10+
 - Manim Community v0.18+
 - FFmpeg
 - Google Gemini API Key
-- Serper API Key (tùy chọn)
+- Serper API Key (optional)
 
-## Cài đặt
+## Installation
 
 ```bash
 # Clone repo
 git clone https://github.com/TCGxDreams/Manim-Video-test.git
 cd Manim-Video-test
 
-# Tạo virtual environment
+# Create virtual environment
 python -m venv manim
 source manim/bin/activate  # Windows: manim\Scripts\activate
 
-# Cài đặt dependencies
+# Install dependencies
 pip install -r requirements.txt
 
-# Cấu hình API Keys
+# Configure API Keys
 cp .env.example .env
-# Điền GOOGLE_API_KEY và SERPER_API_KEY vào file .env
+# Fill in GOOGLE_API_KEY and SERPER_API_KEY in .env file
 ```
 
-## Sử dụng
+## Usage
 
 ```bash
 python main.py
 ```
 
-Video sẽ được tạo trong thư mục `workspace/`:
-- `video_script.txt` - Kịch bản
-- `manim_animation.py` - Code Manim
-- `animation_scene.mp4` - Video gốc
+Output files are created in `workspace/`:
+- `video_script.txt` - Script
+- `manim_animation.py` - Manim code
+- `animation_scene.mp4` - Raw video
 - `voiceover.mp3` - Audio
-- `final_video.mp4` - Video hoàn chỉnh
+- `final_video.mp4` - Final video
 
-## Tùy chỉnh
+## Configuration
 
-### Thay đổi chủ đề video
-Sửa `video_topic` trong `main.py`:
+### Change video topic
+Edit `video_topic` in `main.py`:
 ```python
-video_topic = "Tên chủ đề của bạn"
+video_topic = "Your topic here"
 ```
 
-### Thay đổi thời lượng
-Sửa trong `src/tasks.py`:
-- 130-150 từ voiceover = ~1 phút video
-- 400-450 từ voiceover = ~3 phút video
+### Change duration
+Edit in `src/tasks.py`:
+- 130-150 words voiceover = ~1 minute video
+- 400-450 words voiceover = ~3 minute video
 
-### Model LLM
-Sửa trong `main.py`:
+### LLM Models
+Edit in `main.py`:
 ```python
 llm_flash = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
 llm_pro = ChatGoogleGenerativeAI(model="gemini-3-flash-preview")
 ```
 
-## Cấu trúc thư mục
+## Project Structure
 
 ```
 manim_ai_studio/
 ├── main.py              # Entry point
 ├── src/
-│   ├── agents.py        # Định nghĩa AI Agents + Manim Handbook
-│   ├── tasks.py         # Định nghĩa Tasks
+│   ├── agents.py        # AI Agents + Manim Handbook
+│   ├── tasks.py         # Task definitions
 │   └── tools/
 │       ├── file_tools.py    # File I/O tools
 │       ├── manim_tools.py   # Manim + FFmpeg tools
@@ -89,9 +89,9 @@ manim_ai_studio/
 
 ## Manim Handbook
 
-Code Manim tuân theo các quy tắc trong `MANIM_HANDBOOK` (agents.py):
-- Không dùng `get_tangent_line()` (không có trong Manim Community)
-- Dùng `axes.plot()`, `MathTex()`, `Transform()`, `VGroup()`
+Manim code follows rules in `MANIM_HANDBOOK` (agents.py):
+- DO NOT use `get_tangent_line()` (not in Manim Community)
+- USE `axes.plot()`, `MathTex()`, `Transform()`, `VGroup()`
 - Color palette: TEAL_E (graph), GOLD_E (highlight), BLUE_E (area)
 
 ## License
